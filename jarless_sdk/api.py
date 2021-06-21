@@ -50,3 +50,14 @@ def api_get_package_image(package_name, save_to="/tmp"):
             for chunk in data.iter_content(chunk_size=_8MB):
                 target_file.write(chunk)
     return target_path
+
+
+def api_send_output_values(package_name, task_id, values_dict, secrets):
+    """send values (JSON) to a given task execution"""
+    resp = requests.post(
+        f"{JARLESS_SERVER_URL}/api/executions/{package_name}/{task_id}/add/output/values?secrets={secrets}",
+        json=values_dict,
+    )
+    if resp.status_code != 201:
+        raise RuntimeError("something went wrong!")
+    return True
